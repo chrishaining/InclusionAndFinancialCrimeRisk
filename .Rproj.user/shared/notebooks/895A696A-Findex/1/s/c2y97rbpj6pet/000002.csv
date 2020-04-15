@@ -1,0 +1,2 @@
+"0","zimb <- data %>% filter(`Country.Name`=='Zimbabwe')"
+"0","zimb"

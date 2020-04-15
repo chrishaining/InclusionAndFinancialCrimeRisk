@@ -1,0 +1,73 @@
+---
+title: "Financial Inclusion Data"
+output: html_notebook
+---
+ 
+Source:
+[World Bank's Global Financial Inclusion (Global Findex) Database](https://datacatalog.worldbank.org/dataset/global-financial-inclusion-global-findex-database)
+
+```{r}
+library(readr)
+library(dplyr)
+
+data <- read.csv('FINDEXData.csv')
+head(data)
+tail(data)
+nrow(data)
+```
+
+Wow! There are 142,008 rows. That's a lot. Let's find out how many rows there are per country.
+```{r}
+zimb <- data %>% filter(`Country.Name`=='Zimbabwe')
+zimb
+```
+ 
+ So, that's 776 rows for one country, Zimbabwe. Let's find out if this is typical.
+```{r}
+germ <- data %>% filter(`Country.Name`=='Germany')
+#germ$Indicator.Name
+```
+Yup, it's the same number of rows (776) for Germany, which we'd expect to have a higher level of financial inclusion than Zimbabwe. 
+
+```{r}
+uniqueRows <- data %>% distinct(`Country.Name`)    
+uniqueRows
+```
+Looking at the unique country names, we see 183 rows. However, 24 of these are regional or global groups of countries. Which means that there are 159 countries in the dataset. There are over 190 countries in the world, so the dataset does not include every country.
+
+## Choice of Indicator
+We have a large dataset here, with lots of different indicators of financial inclusion. In order for me to make sense of and use the data, I want to have one indicator per country. This could be one of the existing indicators, or a total score for each country (that is, the sum of all 776 indicators). However, I'm not sure how I could sum the indicator scores or whether that would be a valid thing to do. I took a quick skim of the indicators. The simplest and probably the best is the first indicator, `Account (% age 15+)`. This is the percentage of the population over the age of 15 who have an account. 
+
+```{r}
+# filter the data to return only the desired indicator. Expect nrow=183
+#filteredData <- data %>% filter(`Indicator.Code`=='account.t.d')
+filteredData <- data %>% filter(`Indicator.Name`=='Account (% age 15+)')
+head(filteredData)
+nrow(filteredData)
+filteredData
+```
+Notice that there are some cells with `NA` values. That might cause a bit of a problem. Let's try to gauge the extent of the problem.
+
+```{r}
+# Select columns that are relevant. I don't want to map every year, so will select 2017.
+selectedData <- filteredData %>% select(`Country.Name`, `X2017`)
+selectedData
+```
+
+```{r}
+# count the number of rows that have NA
+
+omittedData <- selectedData %>% filter(is.na(`X2017`))
+omittedData
+
+selectedData <- selectedData %>% filter(is.na(`X2017`)==FALSE)
+selectedData
+```
+
+# write these dataframes to csv files
+```{r}
+write.csv(omittedData, 'countries_not_on_2017_findex.csv')
+write.csv(selectedData, 'findex_2017.csv')
+
+```
+

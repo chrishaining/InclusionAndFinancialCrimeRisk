@@ -1,0 +1,3 @@
+"0",""
+"0","selectedData <- selectedData %>% filter(is.na(`X2017`)==FALSE)"
+"0","selectedData"

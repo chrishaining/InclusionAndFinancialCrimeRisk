@@ -1,0 +1,3 @@
+"0","# Select columns that are relevant. I don't want to map every year, so will select 2017."
+"0","selectedData <- filteredData %>% select(`Country.Name`, `X2017`)"
+"0","selectedData"

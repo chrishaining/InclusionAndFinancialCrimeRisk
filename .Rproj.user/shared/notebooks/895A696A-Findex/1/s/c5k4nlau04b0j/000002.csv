@@ -1,0 +1,2 @@
+"0","uniqueRows <- data %>% distinct(`Country.Name`)    "
+"0","uniqueRows"

@@ -1,0 +1,4 @@
+"0","# count the number of rows that have NA"
+"0",""
+"0","omittedData <- selectedData %>% filter(is.na(`X2017`))"
+"0","omittedData"

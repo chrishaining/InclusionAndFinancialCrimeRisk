@@ -1,0 +1,4 @@
+"0","# filter the data to return only the desired indicator. Expect nrow=183"
+"0","#filteredData <- data %>% filter(`Indicator.Code`=='account.t.d')"
+"0","filteredData <- data %>% filter(`Indicator.Name`=='Account (% age 15+)')"
+"0","head(filteredData)"

@@ -1,0 +1,2 @@
+"0","germ <- data %>% filter(`Country.Name`=='Germany')"
+"0","#germ$Indicator.Name"
