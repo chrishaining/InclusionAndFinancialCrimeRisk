@@ -1,0 +1,78 @@
+---
+title: "AML "
+output: html_notebook
+---
+
+This dataset comes from the Basel Institute on Governance, which issues an [annual ranking of countries' AML risk](https://www.baselgovernance.org/basel-aml-index/public-ranking)
+
+0=Low Risk 10=High Risk
+
+```{r}
+library(readxl)
+library(dplyr)
+library(stringr)
+
+amlDf <- read_excel('public_basel_aml_index_rankings_2012-2018_0_0.xls')
+amlDf
+```
+
+We have 151 rows - a few less than the financial inclusion data. Interesting. The good news is that the year is 2017, which matches the financial inclusion data. I had been worried that it would be data for 2018.
+
+```{r}
+newCols <- c("Country", "Score", "Ranking")
+colnames(amlDf) <- newCols
+amlDf
+
+
+```
+
+```{r}
+# get rid of the first row (0=Low Risk 10 = High Risk)
+amlDf <- amlDf %>% filter(is.na(Score)==F)
+amlDf
+
+
+```
+
+## Notice that several of the countries end with an asterisk. The corresponding footnote isn't relevant to my project, so I want to remove the asterisks. First, let's see how many there are.
+```{r}
+starred <- amlDf %>% filter(endsWith(Country, "*"))
+starred
+```
+There are 26 - too many to change individually. So, let's think about how to remove them all with one piece of code.
+
+
+```{r}
+# use the stringr method str_remove().
+
+# create a separate vector
+starredCountries <- starred$Country
+
+# call the str_remove method on the vector. the second argument is the character you want to replace.
+starredCountries <- str_remove(starredCountries, '[*]')
+
+# put the amended vector into the dataframe
+starred <- starred %>% mutate(Country=starredCountries)
+
+starred
+ 
+
+```
+
+## Let's try the `str_remove()` method on the main dataframe.
+```{r}
+countries <- amlDf$Country
+countries <- str_remove(countries, '[*]')
+
+amlDf <- amlDf %>% mutate(Country=countries)
+amlDf
+```
+Success!
+
+## Let's create a csv file.
+```{r}
+write.csv(amlDf, 'aml_rankings_2017.csv')
+```
+
+
+ 
