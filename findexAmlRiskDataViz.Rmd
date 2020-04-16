@@ -23,8 +23,36 @@ head(df)
 
 
 ```{r}
-scatter <- ggplot(df, aes(x=Financial.Inclusion, y=AML.Risk)) + geom_point() + geom_smooth()
+scatter <- ggplot(df, aes(x=Financial.Inclusion, y=AML.Risk)) + geom_point(color ='blue') + geom_smooth(aes(group=1), method = 'lm', formula = y ~ log(x), se=FALSE, color='red')
 scatter
+
+
+```
+
+
+```{r}
+
+pointsToLabel <- c("Russia", "Venezuela", "Iraq", "Myanmar", "Sudan", "Afghanistan", "Iran", "Argentina", "Brazil", "India", "Burkina Faso", "China", "South Africa", "Spain", "Botswana", "Rwanda", "Bolivia", "United States", "Honduras", "Cambodia", "Azerbaijan", "Japan", "New Zealand", "Singapore")
+
+scatter <- scatter + geom_text(aes(label = Country), color = "black", fontface='bold', data=subset(df, Country %in% pointsToLabel), check_overlap = TRUE) + scale_x_continuous(name="Financial Inclusion", limits = c(0, 105))
+
+
+scatter
+
+```
+
+```{r}
+scatter <- scatter + scale_y_continuous(name="AML Risk", limits = c(0, 10))
+scatter
+```
+
+```{r}
+scatter <- scatter + ggtitle('Financial Inclusion and AML Risk') + theme_economist()
+library(plotly)
+ggplotly(scatter)
+```
+```{r}
+ggsave('scatter.png', height = 7 , width = 10)
 ```
 
 
@@ -42,7 +70,7 @@ Based on our graph, it certainly looks as though there is a negative correlation
 
 ```{r}
 cor.test(df$Financial.Inclusion, df$AML.Risk)
-corr <- -0.6334079 t
+corr <- -0.6334079 
 p <- format(1.733e-15, scientific=F)
 library(stringr)
 str_glue("The correlation coefficient is {corr}")
