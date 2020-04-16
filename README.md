@@ -17,3 +17,10 @@ Financial crime risk data are taken from the Basel Institute on Governance's [AM
 Financial inclusion and money laundering risk are negatively correlated. That is, the more financial inclusion that a country has, the lower will be its money laundering risk.
 
 ## Methodology
+
+
+## File Structure
+Here is the order in which the project was constructed:
+1. `Findex.Rmd` - importing and cleaning the Financial Inclusion data
+2. `AmlRanking.Rmd` - importing and cleaning the AML Risk data
+3. `CombinedData.Rmd` - combining the Financial Inclusion and AML Risk data

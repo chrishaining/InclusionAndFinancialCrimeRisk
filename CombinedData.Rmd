@@ -1,0 +1,170 @@
+---
+title: "Combining the Inclusion and AML Risk datasets"
+output: html_notebook
+---
+
+In `Findex.Rmd` I imported and cleaned Financial Inclusion data, and created a dataset `findex_2017.csv`.
+In `AmlRanking.Rmd` I imported and cleaned AML Risk data, and created a dataset `aml_rankings_2017.csv`.
+In the present notebook I will combine these two datasets.
+
+## Problems
+1. The two datasets do not deal with the same countries: there are 159 countries in `findex_2017.csv` and 147 countries in `aml_rankings_2017.csv`.
+2. The data may not be in the same order. We might assume they are in alphabetical order, but that may not be the case.
+
+## How I intend to solve the problems
+1. Let's get more information on the problem, by comparing the two datasets.
+2. We can reorder one or both the datasets if necessary.
+
+## Problem 1: finding out which countries are missing from the lists
+```{r}
+library(readr)
+library(dplyr)
+
+findex <- read.csv('findex_2017.csv')
+
+# The first 22 rows are country groupings (such as 'World' and 'High income'), so let's filter them out
+findex <- findex %>% filter(X>22)
+
+# While we're cleaning, let's also rename the 'X2017' column to 'Financial Inclusion'
+
+findex <- findex %>% rename(`Financial Inclusion`=X2017)
+
+findex <- findex %>% mutate(`Country.Name`=as.character(`Country.Name`))
+
+findex
+
+
+
+```
+
+# get  list of the countries 
+```{r}
+
+inclusionCountries <- findex$Country.Name
+inclusionCountriesData <- data.frame(inclusionCountries)
+inclusionCountriesData <- inclusionCountriesData %>% rename(Country=inclusionCountries)
+inclusionCountriesData
+```
+
+## import and clean AmlRankings
+```{r}
+
+amlRisk <- read.csv('aml_rankings_2017.csv')
+amlRisk
+
+# The first row shouldn't be there (it's actually a header), so delete it
+# The first 22 rows are country groupings (such as 'World' and 'High income'), so let's filter them out
+amlRisk <- amlRisk %>% filter(X!=1)
+
+# While we're cleaning, let's also rename the 'Score' column to 'AML Risk' 
+
+amlRisk <- amlRisk %>% rename(`AML Risk`=Score)
+
+# and let's also delete Ranking
+amlRisk <- amlRisk %>% select(-Ranking)
+
+amlRisk <- amlRisk %>% mutate(Country=as.character(Country))
+
+amlRisk
+
+```
+
+# get  list of the AmlRisk countries 
+```{r}
+amlCountries <- amlRisk$Country
+amlCountriesData <- data.frame(amlCountries)
+#inclusionCountriesData
+
+
+amlCountriesData <- amlCountriesData %>% rename(Country=amlCountries)
+amlCountriesData
+```
+
+
+```{r}
+
+combinedData <- amlCountriesData %>% full_join(inclusionCountriesData)
+combinedData <- combinedData %>% arrange(Country)
+combinedData
+
+# excludedAmlCountries <- amlCountries[!(amlCountries %in% inclusionCountries)]
+# class(excludedAmlCountries)
+
+
+#excludedInclusionCountries <- inclusionCountries[!(inclusionCountries %in% amlCountries)]
+#excludedInclusionCountries
+
+#bothExcluded <- c(excludedInclusionCountries, excludedAmlCountries)
+ 
+#bothExcluded
+```
+
+## tidy up where the same country has different names
+```{r}
+# Same country, different name
+# Bosnia and Herzegovina - Bosnia-Herzegovina - change AML
+# Congo, Dem. Rep - Congo, Rep - no, they are different - 
+# Cote d'Ivoire - Cote D'ivoire - change AML
+# Egypt - Egypt, Arab Rep. - change Findex DONE
+# Guinea - Guinea-Bissau - no, they are different
+# Hong Kong Sar, China - Hong Kong SAR, China - change AML
+# Iran - Iran, Islamic Rep. - change FINDex  DONE
+# Korea, Rep. - Korea, South - change findex- DONE
+# Kyrgyz Republic - Kyrgyzstan - change findex DONE 
+# Lao PDR - Laos - change findex DONE
+# Macedonia - Macedonia, FYR - change findex DONE
+# Slovak Republic - Slovakia - change findex DONE 
+# Russia - Russian Federation - change findex DONE
+# Venezuela - Venezuela, RB - change findex DONE
+
+```
+
+```{r}
+
+# replace the names in findex. For some reason, it's not letting me do this with vectors, so I will do it the slow way.
+
+findex <- findex %>% mutate(`Country.Name`=replace(`Country.Name`, `Country.Name`=='Egypt, Arab Rep.', 'Egypt'))
+
+findex <- findex %>% mutate(`Country.Name`=replace(`Country.Name`, `Country.Name`=='Iran, Islamic Rep.', 'Iran'))
+
+findex <- findex %>% mutate(`Country.Name`=replace(`Country.Name`, `Country.Name`=='Korea, Rep.', 'Korea, South'))
+
+findex <- findex %>% mutate(`Country.Name`=replace(`Country.Name`, `Country.Name`=='Kyrgyz Republic', 'Kyrgyzstan'))
+
+findex <- findex %>% mutate(`Country.Name`=replace(`Country.Name`, `Country.Name`=='Lao PDR', 'Laos'))
+
+findex <- findex %>% mutate(`Country.Name`=replace(`Country.Name`, `Country.Name`=='Macedonia, FYR', 'Macedonia'))
+
+findex <- findex %>% mutate(`Country.Name`=replace(`Country.Name`, `Country.Name`=='Russian Federation', 'Russia'))
+
+findex <- findex %>% mutate(`Country.Name`=replace(`Country.Name`, `Country.Name`=='Slovak Republic', 'Slovakia'))
+
+findex <- findex %>% mutate(`Country.Name`=replace(`Country.Name`, `Country.Name`=='Venezuela, RB', 'Venezuela'))
+
+# findex <- findex %>% mutate(`Country.Name`=replace(`Country.Name`, `X`==c(60,79,88,91,92,100,131,138,162), c('Egypt', 'Iran', 'South Korea', 'Kyrgyzstan', 'Laos', 'Macedonia', 'Russia', 'Slovakia', 'Venezuela')))
+
+
+
+# `Country.Name`==c('Egypt, Arab Rep.', 'Iran, Islamic Rep.', 'Korea, Rep.', 'Kyrgyz Republic', 'Lao PDR', 'Macedonia, FYR', 'Russian Federation', 'Slovak Republic', 'Venezuela, RB'), 
+
+findex
+
+
+```
+
+```{r}
+# replace the names in amlRisk
+
+amlRisk <- amlRisk %>% mutate(Country=replace(Country, Country=='Hong Kong Sar, China', 'Hong Kong SAR, China'))
+
+ 
+amlRisk <- amlRisk %>% mutate(Country=replace(Country, Country=='Bosnia-Herzegovina', 'Bosnia and Herzegovina')) 
+ 
+ 
+# Cote d'Ivoire - Cote D'ivoire - change AML
+amlRisk <- amlRisk %>% mutate(Country=replace(Country, Country=="Cote D'ivoire", "Cote d'Ivoire"))
+
+amlRisk <- amlRisk %>% arrange(Country)
+amlRisk
+```
+

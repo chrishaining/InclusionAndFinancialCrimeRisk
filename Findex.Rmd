@@ -64,4 +64,10 @@ selectedData <- selectedData %>% filter(is.na(`X2017`)==FALSE)
 selectedData
 ```
 
+# write these dataframes to csv files
+```{r}
+write.csv(omittedData, 'countries_not_on_2017_findex.csv')
+write.csv(selectedData, 'findex_2017.csv')
+
+```
 

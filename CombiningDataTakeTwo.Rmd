@@ -1,0 +1,162 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+ 
+
+```{r}
+library(readr)
+library(dplyr)
+
+findex <- read.csv('findex_2017_cleaned.csv')
+
+findex <- findex %>% select(`Country.Name`, `Financial.Inclusion`)
+head(findex)
+nrow(findex)
+ 
+```
+
+```{r}
+amlRisk <- read.csv('amlRisk_2017_cleaned.csv')
+amlRisk <- amlRisk %>% select(Country, `AML.Risk`)
+head(amlRisk)
+nrow(amlRisk)
+```
+
+```{r}
+
+row1 <- c(1,NA)
+row2 <- c(3,NA)
+
+findex2 <- rbind(findex, row1)
+findex2 <- rbind(findex2, row2)
+#findex2 <- findex2 %>% mutate(`Country.Name`=as.character(`Country.Name`))
+#findex2 <- findex2 %>% mutate(`Country.Name`=replace(`Country.Name`, `Financial.Inclusion`=="Extra", "Extra"))
+#findex2 <- findex2 %>% mutate(`Country.Name`=replace(`Country.Name`, `Financial.Inclusion`=="Bonus", "Bonus"))
+
+findex2
+# combined <- amlRisk %>% cbind(findex)
+# combined
+```
+
+```{r}
+combined <- amlRisk %>% cbind(findex2)
+combined
+```
+
+# missing from FINDEX
+Angola
+Cape Verde
+Gambia
+Grenada
+Guinea-Bissau
+Guyana
+Iceland
+Lithuania
+Marhsall Islands
+Papua New Guinea
+Qatar
+Sao Tome and Principe
+Sudan
+St. Lucia
+St. Vincent And The Grenadines
+Timor-Leste (East Timor)
+Vanuatu
+Yemen
+
+# missing from AML
+Belarus
+Cameroon
+Congo, Dem Rep? 
+Congo, Rep? 
+Dominica
+Guinea
+Iraq
+Kosovo
+Madagascar
+South Sudan
+Turkmenistan
+West Bank and Gaza
+
+## filter out unwanted rows from findex
+```{r}
+
+findex <- findex %>% filter(`Country.Name`!='Belarus')
+findex <- findex %>% filter(`Country.Name`!='Cameroon')
+findex <- findex %>% filter(`Country.Name`!='Congo, Dem. Rep.')
+findex <- findex %>% filter(`Country.Name`!='Congo, Rep.')
+findex <- findex %>% filter(`Country.Name`!='Dominica')
+findex <- findex %>% filter(`Country.Name`!='Guinea')
+findex <- findex %>% filter(`Country.Name`!='Iraq')
+findex <- findex %>% filter(`Country.Name`!='Kosovo')
+findex <- findex %>% filter(`Country.Name`!='Madagascar')
+findex <- findex %>% filter(`Country.Name`!='South Sudan')
+findex <- findex %>% filter(`Country.Name`!='Turkmenistan')
+findex <- findex %>% filter(`Country.Name`!='West Bank and Gaza')
+findex <- findex %>% filter(`Country.Name`!='Central African Republic')
+findex <- findex %>% filter(`Country.Name`!='Chad')
+findex <- findex %>% filter(`Country.Name`!='Gabon')
+findex <- findex %>% filter(`Country.Name`!='Ethiopia')
+findex <- findex %>% filter(`Country.Name`!='Libya')
+findex <- findex %>% filter(`Country.Name`!='Lithuania')
+findex <- findex %>% filter(`Country.Name`!='Togo')
+findex
+
+```
+
+## filter out unwanted rows from amlRisk
+```{r}
+amlRisk <- amlRisk %>% filter(Country!='Angola')
+
+amlRisk <- amlRisk %>% filter(Country!='Cape Verde')
+amlRisk <- amlRisk %>% filter(Country!='Gambia')
+
+amlRisk <- amlRisk %>% filter(Country!='Grenada')
+amlRisk <- amlRisk %>% filter(Country!='Guinea-Bissau')
+amlRisk <- amlRisk %>% filter(Country!='Guyana')
+amlRisk <- amlRisk %>% filter(Country!='Iceland')
+amlRisk <- amlRisk %>% filter(Country!='Lithuania')
+amlRisk <- amlRisk %>% filter(Country!='Marshall Islands')
+amlRisk <- amlRisk %>% filter(Country!='Papua New Guinea')
+amlRisk <- amlRisk %>% filter(Country!='Qatar')
+amlRisk <- amlRisk %>% filter(Country!='Sao Tome And Principe')
+amlRisk <- amlRisk %>% filter(Country!='Sudan')
+amlRisk <- amlRisk %>% filter(Country!='St. Lucia')
+amlRisk <- amlRisk %>% filter(Country!='St. Vincent And The Grenadines')
+amlRisk <- amlRisk %>% filter(Country!='Timor-Leste (East Timor)')
+amlRisk <- amlRisk %>% filter(Country!='Vanuatu')
+amlRisk <- amlRisk %>% filter(Country!='Yemen')
+amlRisk <- amlRisk %>% filter(Country!='Dominica')
+amlRisk <- amlRisk %>% filter(Country!='Jamaica')
+
+amlRisk
+# Angola
+# Cape Verde
+# Gambia
+# Grenada
+# Guinea-Bissau
+# Guyana
+# Iceland
+# Lithuania
+# Marhsall Islands
+# Papua New Guinea
+# Qatar
+# Sao Tome and Principe
+# Sudan
+# St. Lucia
+# St. Vincent And The Grenadines
+# Timor-Leste (East Timor)
+# Vanuatu
+# Yemen
+
+
+```
+
+## they seem to be equal, so let's try and add them together
+```{r}
+
+
+```
+
+
+
