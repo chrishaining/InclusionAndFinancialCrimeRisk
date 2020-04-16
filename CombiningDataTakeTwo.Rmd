@@ -154,9 +154,29 @@ amlRisk
 
 ## they seem to be equal, so let's try and add them together
 ```{r}
+combined <- amlRisk %>% cbind(findex)
+combined
 
 
 ```
 
 
+```{r}
+# reorder the columns so that country names are next to each other (so I can check them)
+newOrder <- c('Country', 'Country.Name', 'AML.Risk', 'Financial.Inclusion')
+combined2 <- combined[, newOrder]
+combined2
+```
+## let's clean this a bit more.
+```{r}
+# get rid of Country.Name
+combined2 <- combined2 %>% select(-Country.Name)
+
+library(stringr)
+combined2 <- combined2 %>% mutate(Country=as.character(Country))
+
+combined2 <- combined2 %>% mutate(Country=replace(Country, str_detect(Country, "Taiwan"), "Taiwan"))
+
+combined2
+```
 
