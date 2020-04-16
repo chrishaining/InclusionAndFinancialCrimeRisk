@@ -42,7 +42,7 @@ Based on our graph, it certainly looks as though there is a negative correlation
 
 ```{r}
 cor.test(df$Financial.Inclusion, df$AML.Risk)
-corr <- -0.6334079 
+corr <- -0.6334079 t
 p <- format(1.733e-15, scientific=F)
 library(stringr)
 str_glue("The correlation coefficient is {corr}")

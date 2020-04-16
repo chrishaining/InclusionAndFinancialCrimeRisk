@@ -168,3 +168,14 @@ amlRisk <- amlRisk %>% arrange(Country)
 amlRisk
 ```
 
+```{r}
+library(readr)
+write.csv(findex, 'findex_2017_cleaned.csv')
+
+
+```
+
+```{r}
+write.csv(amlRisk, 'amlRisk_2017_cleaned.csv')
+```
+

@@ -181,4 +181,8 @@ combined2 <- combined2 %>% mutate(Country=replace(Country, str_detect(Country, "
 combined2
 ```
 
+Let's write this to a CSV file
+```{r}
+write.csv(combined2, 'financial_inclusion_and_aml_risk_2017.csv')
+```
 
