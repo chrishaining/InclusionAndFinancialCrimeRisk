@@ -1,0 +1,53 @@
+---
+title: "Data Visualization of AML Risk and Financial Inclusion 2017"
+output: html_notebook
+---
+ 
+
+```{r}
+library(readr)
+library(ggplot2)
+library(plotly)
+library(ggthemes)
+```
+
+
+
+
+```{r}
+df <- read.csv('financial_inclusion_and_aml_risk_2017.csv')
+head(df)
+```
+ 
+
+
+
+```{r}
+scatter <- ggplot(df, aes(x=Financial.Inclusion, y=AML.Risk)) + geom_point() + geom_smooth()
+scatter
+```
+
+
+## What is the correlation coefficient, and what is the level of significance?
+
+The hypothesis was:
+Financial inclusion and money laundering risk are negatively correlated. That is, the more financial inclusion that a country has, the lower will be its money laundering risk.
+
+Therefore, the null hypothesis was:
+The correlation between financial inclusion and money laundering risk is equal to or greater than zero.
+
+I will use the standard level of significance - 0.05.
+
+Based on our graph, it certainly looks as though there is a negative correlation.
+
+```{r}
+cor.test(df$Financial.Inclusion, df$AML.Risk)
+corr <- -0.6334079 
+p <- format(1.733e-15, scientific=F)
+library(stringr)
+str_glue("The correlation coefficient is {corr}")
+str_glue("The P value is {p}")
+
+```
+
+Since the P value is less than 0.05, we can reject the null hypothesis.

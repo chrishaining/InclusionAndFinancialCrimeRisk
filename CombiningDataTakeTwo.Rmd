@@ -172,6 +172,7 @@ combined2
 # get rid of Country.Name
 combined2 <- combined2 %>% select(-Country.Name)
 
+# change the name of "Taiwan, China" to "Taiwan
 library(stringr)
 combined2 <- combined2 %>% mutate(Country=as.character(Country))
 
@@ -179,4 +180,5 @@ combined2 <- combined2 %>% mutate(Country=replace(Country, str_detect(Country, "
 
 combined2
 ```
+
 
